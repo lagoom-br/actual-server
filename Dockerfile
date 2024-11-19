@@ -1,5 +1,6 @@
 FROM node:18-bookworm as base
 RUN apt-get update && apt-get install -y openssl
+ADD actual/packages/desktop-client/ /app/actual/packages/desktop-client
 WORKDIR /app
 COPY .yarn ./.yarn
 COPY yarn.lock package.json .yarnrc.yml ./
