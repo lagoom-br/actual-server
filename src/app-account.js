@@ -14,6 +14,7 @@ import {
 } from './account-db.js';
 import { changePassword, loginWithPassword } from './accounts/password.js';
 import { isValidRedirectUrl, loginWithOpenIdSetup } from './accounts/openid.js';
+import finalConfig from './load-config.js';
 
 let app = express();
 app.use(express.json());
@@ -36,6 +37,10 @@ app.get('/needs-bootstrap', (req, res) => {
       loginMethod: getLoginMethod(),
       availableLoginMethods: listLoginMethods(),
       multiuser: getActiveLoginMethod() === 'openid',
+      autoLogin:
+        'openId' in finalConfig && 'autoLogin' in finalConfig.openId
+          ? finalConfig.openId.autoLogin
+          : false,
     },
   });
 });
