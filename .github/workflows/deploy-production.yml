@@ -1,4 +1,4 @@
-name: Deploy to Fly.io (Dev)
+name: Deploy to Fly.io (Production)
 
 on:
   release:
