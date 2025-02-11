@@ -237,7 +237,7 @@ export async function loginWithOpenIdFinalize(body) {
             ) || {};
 
           if (userIdFromDb == null) {
-            throw new Error('openid-grant-failed');
+            return { url: `https://fiwell.com.br/usuario-nao-autorizado/` };
           }
 
           if (!displayName && userInfo.name) {
