@@ -237,7 +237,7 @@ export async function loginWithOpenIdFinalize(body) {
             ) || {};
 
           if (userIdFromDb == null) {
-            return { url: `https://fiwell.com.br/usuario-nao-autorizado/` };
+            return { url: `https://fiwell.com.br/usuario-nao-autorizado/`, error: "401" };
           }
 
           if (!displayName && userInfo.name) {
@@ -254,7 +254,7 @@ export async function loginWithOpenIdFinalize(body) {
       if (error.message === 'user-already-exists') {
         return { error: 'user-already-exists' };
       } else if (error.message === 'openid-grant-failed') {
-        return { error: 'openid-grant-failed' };
+        return { url: `https://fiwell.com.br/usuario-nao-autorizado/`, error: "401" };
       } else {
         throw error; // Re-throw other unexpected errors
       }
@@ -284,7 +284,7 @@ export async function loginWithOpenIdFinalize(body) {
     return { url: `${return_url}/openid-cb?token=${token}` };
   } catch (err) {
     console.error('OpenID grant failed:', err);
-    return { error: 'openid-grant-failed' };
+    return { url: `https://fiwell.com.br/usuario-nao-autorizado/`, error: "401" };
   }
 }
 

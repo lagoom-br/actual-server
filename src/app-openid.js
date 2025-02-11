@@ -86,6 +86,13 @@ app.get('/callback', async (req, res) => {
   let { error, url } = await loginWithOpenIdFinalize(req.query);
 
   if (error) {
+
+    if(url) {
+      console.log("User not allowed");
+      res.redirect(url);
+      return;
+    }
+    
     res.status(400).send({ status: 'error', reason: error });
     return;
   }
