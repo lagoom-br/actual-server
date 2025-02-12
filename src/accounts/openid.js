@@ -236,8 +236,9 @@ export async function loginWithOpenIdFinalize(body) {
               [identity],
             ) || {};
 
-          if (userIdFromDb == null) {
-            return { url: `https://fiwell.com.br/usuario-nao-autorizado/`, error: "401" };
+          if (!userIdFromDb) {
+            userId = null;
+            return;
           }
 
           if (!displayName && userInfo.name) {
@@ -258,6 +259,10 @@ export async function loginWithOpenIdFinalize(body) {
       } else {
         throw error; // Re-throw other unexpected errors
       }
+    }
+
+    if(userId === null) {
+      return { url: `https://fiwell.com.br/usuario-nao-autorizado/`, error: "401" };
     }
 
     const token = uuid.v4();
