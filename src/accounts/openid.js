@@ -327,3 +327,41 @@ export function isValidRedirectUrl(url) {
     return false;
   }
 }
+
+export async function loginOutOpenIdProvider(query) {
+  if (!query.returnUrl) {
+    return { error: 'return-url-missing' };
+  }
+  if (!isValidRedirectUrl(query.returnUrl)) {
+    return { error: 'invalid-return-url' };
+  }
+
+  let accountDb = getAccountDb();
+  let config = accountDb.first('SELECT extra_data FROM auth WHERE method = ?', [
+    'openid',
+  ]);
+  if (!config) {
+    return { error: 'openid-not-configured' };
+  }
+
+  try {
+    config = JSON.parse(config['extra_data']);
+  } catch (err) {
+    console.error('Error parsing OpenID configuration:', err);
+    return { error: 'openid-setup-failed' };
+  }
+
+  let client;
+  try {
+    client = await setupOpenIdClient(config);
+  } catch (err) {
+    console.error('Error setting up OpenID client:', err);
+    return { error: 'openid-setup-failed' };
+  }
+
+  const endSessionUrl = client.endSessionUrl({
+    post_logout_redirect_uri: query.returnUrl,
+  });
+
+  return { url: endSessionUrl };
+}
